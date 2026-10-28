@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>🤖 AI SUPER APP - Multi Tools</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            padding: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        
+        .tab-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+        
+        .tab {
+            padding: 10px 16px;
+            background: #f0f0f0;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            color: #555;
+        }
+        
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 15px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102,126,234,0.3);
+        }
+        
+        .result-box {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 18px;
+            min-height: 100px;
+            border: 1px solid #e9ecef;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #333;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+        
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .api-key-section {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        
+        .api-key-section input {
+            background: white;
+            border-color: #ffc107;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #e9ecef;
+            border-radius: 20px;
+            font-size: 11px;
+            color: #555;
+            margin-right: 5px;
+        }
+        
+        .info-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .floating-ai-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            box-shadow: 0 4px 20px rgba(102,126,234,0.5);
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.3s;
+            border: 3px solid white;
+        }
+        
+        .floating-ai-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .floating-chat {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .floating-chat.active {
+            display: flex;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .chat-header button {
+            width: auto;
+            padding: 2px 10px;
+            background: rgba(255,255,255,0.2);
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f5f5f5;
+        }
+        
+        .message {
+            margin-bottom: 10px;
+            display: flex;
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+        
+        .message.bot {
+            justify-content: flex-start;
+        }
+        
+        .message-content {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+        
+        .message.user .message-content {
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .message.bot .message-content {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .chat-input-area {
+            display: flex;
+            padding: 10px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .chat-input-area input {
+            flex: 1;
+            margin-right: 8px;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            margin-bottom: 0;
+        }
+        
+        .chat-input-area button {
+            width: 60px;
+            padding: 10px;
+            border-radius: 20px;
+            margin: 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI SUPER APP</h1>
+        <div class="subtitle">Multi-Tools dengan AI + Search + Weather</div>
+        
+        <!-- API KEY SECTION (INPUT MANUAL) -->
+        <div class="api-key-section">
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                <span class="badge">🔐 PENTING</span>
+                <span style="font-weight: 600; margin-left: 5px;">Masukkan API Key kamu:</span>
+            </div>
+            <div style="margin-bottom: 8px;">
+                <input type="password" id="geminiKey" placeholder="Google Gemini API Key" value="AIzaSy... (isi dengan key lu)">
+            </div>
+            <div class="info-text">
+                ⚡ API Key disimpan di memory browser, aman.
+            </div>
+        </div>
+        
+        <!-- TAB NAVIGATION -->
+        <div class="tab-container">
+            <button class="tab active" data-tab="chat">💬 Chat AI</button>
+            <button class="tab" data-tab="search">🔍 Search</button>
+            <button class="tab" data-tab="weather">🌤️ Weather</button>
+        </div>
+        
+        <!-- TAB 1: CHAT AI -->
+        <div class="tab-content active" id="tab-chat">
+            <div class="input-group">
+                <label>Pertanyaan:</label>
+                <textarea id="chatPrompt" placeholder="Contoh: Jelaskan teori relativitas..."></textarea>
+            </div>
+            <button id="chatBtn">💬 Kirim ke AI</button>
+            <div class="result-box" id="chatResult">Hasil chat akan muncul di sini...</div>
+        </div>
+        
+        <!-- TAB 2: SEARCH -->
+        <div class="tab-content" id="tab-search">
+            <div class="input-group">
+                <label>Kata kunci:</label>
+                <input type="text" id="searchQuery" placeholder="Contoh: berita terbaru">
+            </div>
+            <button id="searchBtn">🔍 Search</button>
+            <div class="result-box" id="searchResult">Hasil pencarian akan muncul di sini...</div>
+        </div>
+        
+        <!-- TAB 3: WEATHER -->
+        <div class="tab-content" id="tab-weather">
+            <div class="input-group">
+                <label>Kota:</label>
+                <input type="text" id="cityInput" placeholder="Contoh: Jakarta">
+            </div>
+            <button id="weatherBtn">🌤️ Cek Cuaca</button>
+            <div class="result-box" id="weatherResult">Info cuaca akan muncul di sini...</div>
+        </div>
+        
+        <div class="footer">
+            ⚡ bottaifliks.co.id | Bisa diubah jadi APK
+        </div>
+    </div>
+    
+    <!-- FLOATING CHAT BUTTON -->
+    <div class="floating-ai-btn" id="floatingBtn">💬</div>
+    <div class="floating-chat" id="floatingChat">
+        <div class="chat-header">
+            <span>🤖 AI Assistant</span>
+            <button id="closeChat">✖</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-content">Halo! Ada yang bisa dibantu?</div>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Tanya sesuatu...">
+            <button id="sendChat">Kirim</button>
+        </div>
+    </div>
+
+    <script>
+        // ==================== AMBIL API KEY ====================
+        function getGeminiKey() {
+            return document.getElementById('geminiKey').value.trim();
+        }
+        
+        // ==================== TAB NAVIGATION ====================
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.tab-content');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(`tab-${tabId}`).classList.add('active');
+            });
+        });
+        
+        // ==================== CHAT AI ====================
+        async function callGemini(prompt) {
+            const apiKey = getGeminiKey();
+            if (!apiKey) throw new Error('API Key belum diisi!');
+            
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{ text: prompt }]
+                    }]
+                })
+            });
+            
+            if (!response.ok) {
+                const error = await response.text();
+                throw new Error(`Error: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return data.candidates[0].content.parts[0].text;
+        }
+        
+        document.getElementById('chatBtn').addEventListener('click', async () => {
+            const prompt = document.getElementById('chatPrompt').value.trim();
+            const resultDiv = document.getElementById('chatResult');
+            
+            if (!prompt) {
+                resultDiv.innerHTML = '⚠️ Masukkan pertanyaan!';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<div class="loading">AI sedang mikir</div>';
+            
+            try {
+                const response = await callGemini(prompt);
+                resultDiv.innerHTML = response.replace(/\n/g, '<br>');
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        });
+        
+        // ==================== SEARCH ====================
+        document.getElementById('searchBtn').addEventListener('click', async () => {
+            const query = document.getElementById('searchQuery').value.trim();
+            const resultDiv = document.getElementById('searchResult');
+            
+            if (!query) {
+                resultDiv.innerHTML = '⚠️ Masukkan kata kunci!';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<div class="loading">Mencari...</div>';
+            
+            try {
+                const prompt = `Cari informasi terbaru tentang: "${query}". Berikan hasil ringkas dengan sumber.`;
+                const response = await callGemini(prompt);
+                resultDiv.innerHTML = response.replace(/\n/g, '<br>');
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        });
+        
+        // ==================== WEATHER ====================
+        document.getElementById('weatherBtn').addEventListener('click', async () => {
+            const city = document.getElementById('cityInput').value.trim();
+            const resultDiv = document.getElementById('weatherResult');
+            
+            if (!city) {
+                resultDiv.innerHTML = '⚠️ Masukkan nama kota!';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<div class="loading">Mengecek cuaca...</div>';
+            
+            try {
+                const prompt = `Berikan informasi cuaca terkini untuk kota ${city}. Format: Suhu, kondisi, kelembaban, dan rekomendasi.`;
+                const response = await callGemini(prompt);
+                resultDiv.innerHTML = response.replace(/\n/g, '<br>');
+            } catch (error) {
+                resultDiv.innerHTML = `❌ Error: ${error.message}`;
+            }
+        });
+        
+        // ==================== FLOATING CHAT ====================
+        const floatingBtn = document.getElementById('floatingBtn');
+        const floatingChat = document.getElementById('floatingChat');
+        const closeChat = document.getElementById('closeChat');
+        const sendChat = document.getElementById('sendChat');
+        const chatInput = document.getElementById('chatInput');
+        const chatMessages = document.getElementById('chatMessages');
+        
+        floatingBtn.addEventListener('click', () => {
+            floatingChat.classList.toggle('active');
+        });
+        
+        closeChat.addEventListener('click', () => {
+            floatingChat.classList.remove('active');
+        });
+        
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            
+            // Tampilkan pesan user
+            chatMessages.innerHTML += `
+                <div class="message user">
+                    <div class="message-content">${text}</div>
+                </div>
+            `;
+            chatInput.value = '';
+            
+            // Tampilkan loading
+            chatMessages.innerHTML += `
+                <div class="message bot">
+                    <div class="message-content">AI sedang mengetik...</div>
+                </div>
+            `;
+            
+            // Scroll ke bawah
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            try {
+                const response = await callGemini(text);
+                
+                // Hapus loading
+                chatMessages.innerHTML = chatMessages.innerHTML.replace(
+                    '<div class="message bot"><div class="message-content">AI sedang mengetik...</div></div>', 
+                    ''
+                );
+                
+                // Tampilkan jawaban
+                chatMessages.innerHTML += `
+                    <div class="message bot">
+                        <div class="message-content">${response}</div>
+                    </div>
+                `;
+            } catch (error) {
+                chatMessages.innerHTML = chatMessages.innerHTML.replace(
+                    '<div class="message bot"><div class="message-content">AI sedang mengetik...</div></div>', 
+                    ''
+                );
+                
+                chatMessages.innerHTML += `
+                    <div class="message bot">
+                        <div class="message-content">❌ Error: ${error.message}</div>
+                    </div>
+                `;
+            }
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        sendChat.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
